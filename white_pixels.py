@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 # INPUT: unprocesse img file
 # OUTPUT: num of white px
 
-def num_white_pixels(img):
+def white_pixels(img):
     assert img is not None, "file could not be read, check with os.path.exists()"
  
     # Otsu's thresholding after Gaussian filtering
@@ -31,7 +31,7 @@ def num_white_pixels(img):
 if __name__ == "__main__":
     try:
         img = cv.imread(r"C:\Users\Flyte\OneDrive - Delft University of Technology\Subjects\Microsat Engineering\code\imgs\testimg.jpg", cv.IMREAD_GRAYSCALE)  #queryimage # left image
-        num_white_pixels(img)
+        white_pixels(img)
     except:
         print("[white_pixels]: error")
     # except ros.ROSInterruptException:
