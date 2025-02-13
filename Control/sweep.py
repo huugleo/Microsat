@@ -42,7 +42,7 @@ def sweep_initial(sweep_range, sweep_steps):
                        "max_ang": [0.2, 0.2, 0.2]})
 # Center the robot to the target
 
-
+# Fetch distance, rotate, calculate ratio, determine rotation, rotate until convergence (accuracy input)
 
 
 
