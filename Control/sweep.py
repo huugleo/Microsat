@@ -40,10 +40,6 @@ def sweep_initial(sweep_range, sweep_steps):
     publish_move_goal({"goal": [0.0, 0.0, -(white_pixels_array[0][-1]-max_white_pixels_angle)],
                        "max_lin": [0.5, 0.5, 0.5],
                        "max_ang": [0.2, 0.2, 0.2]})
-# Center the robot to the target
-
-# Fetch distance, rotate, calculate ratio, determine rotation, rotate until convergence (accuracy input)
-
 
 
 

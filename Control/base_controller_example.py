@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import rospy2 as rospy
+import rospy
 from std_msgs.msg import Header
 from actionlib_msgs.msg import GoalID
 from robotnik_navigation_msgs.msg import MoveActionGoal, MoveGoal
