@@ -5,7 +5,65 @@ from sensor_msgs.msg import Image  # Message type for images in ROS
 from std_msgs.msg import Bool  # Message type for Boolean values in ROS
 import os  # Library for handling file paths and directories
 
+# Initialize global variables
+bridge = CvBridge()  # Create a CvBridge instance for image conversion
+process_flag = False  # Initially set to False, only process when flag is triggered
+image_count = 1  # Counter for saving images with unique filenames
+save_directory = "/home/robot/catkin_ws/src/microsat_group_2/src/images/"  # Directory to save images
 
+# Ensure the save directory exists, create it if it does not
+if not os.path.exists(save_directory):
+    os.makedirs(save_directory)
+
+
+def image_callback(msg):
+    """ Callback function for image topic, triggered when a new image is received. """
+    global process_flag, image_count  # Access global variables
+    if process_flag:  # Process only one image per flag trigger
+        try:
+            rospy.loginfo("Processing and saving one image...")
+            # Convert the ROS image message to an OpenCV image
+            cv_image = bridge.imgmsg_to_cv2(msg, "rgb8")
+
+            # Generate file path for saving the image
+            image_path = os.path.join(save_directory, f"target_{image_count}.png")
+
+            # Save the image using OpenCV
+            success = cv2.imwrite(image_path, cv_image)
+
+            if success:
+                rospy.loginfo(f"Image saved to {image_path}")
+                image_count += 1  # Increment image count for the next image
+            else:
+                rospy.logerr("Failed to save image")
+
+            process_flag = False  # Reset flag after processing **one image**
+        except CvBridgeError as e:
+            rospy.logerr(f"cv_bridge exception: {e}")  # Log CvBridge errors
+        except Exception as e:
+            rospy.logerr(f"Unexpected error: {e}")  # Catch any unexpected errors
+
+
+def flag_listener_callback(msg):
+    """ Callback function for the flag topic, updates the process_flag value. """
+    global process_flag
+    if msg.data:  # If received flag is True, allow processing of a single image
+        process_flag = True
+        rospy.loginfo("Processing flag set to: True (Ready to process next image)")
+
+
+def trigger_image_capture():
+    """Publishes a True message to the /image_flag topic to trigger image capture."""
+    rospy.init_node("image_trigger_node", anonymous=True)
+    pub = rospy.Publisher("/image_flag", Bool, queue_size=10)
+
+    # Wait for the publisher to register with the ROS system
+    rospy.sleep(1)
+
+    rospy.loginfo("Sending image capture trigger...")
+    pub.publish(True)  # Send the trigger signal
+
+    rospy.loginfo("Image capture request sent.")
 
 # Initialize the ROS node named "camera"
 rospy.init_node("camera", anonymous=True)
@@ -16,7 +74,11 @@ rospy.Subscriber("/galaxy_camera/galaxy_camera/image_raw", Image, image_callback
 # Subscribe to the flag topic to control image processing state
 rospy.Subscriber("image_flag", Bool, flag_listener_callback)
 
-rospy.loginfo("Image acquisition node started.")
+rospy.loginfo("Image acquisition node started. Waiting for flag signal to process images.")
 
 # Keep the node running and continuously listen for messages
 rospy.spin()
+
+
+if __name__ == "__main__":
+    trigger_image_capture()
