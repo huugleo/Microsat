@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import rospy  # Import ROS Python library for handling nodes and topics
 import cv2  # OpenCV for image processing
 from cv_bridge import CvBridge, CvBridgeError  # Converts ROS images to OpenCV format
@@ -9,7 +10,7 @@ import os  # Library for handling file paths and directories
 bridge = CvBridge()  # Create a CvBridge instance for image conversion
 process_flag = False  # Initially set to False, only process when flag is triggered
 image_count = 1  # Counter for saving images with unique filenames
-save_directory = "/home/robot/catkin_ws/src/microsat_group_2/src/images/"  # Directory to save images
+save_directory = "/home/thomasvkuik/catkin_ws/src/microsat_camera/src/images/"  # Directory to save images
 
 # Ensure the save directory exists, create it if it does not
 if not os.path.exists(save_directory):
@@ -26,7 +27,7 @@ def image_callback(msg):
             cv_image = bridge.imgmsg_to_cv2(msg, "rgb8")
 
             # Generate file path for saving the image
-            image_path = os.path.join(save_directory, f"target_{image_count}.png")
+            image_path = os.path.join(save_directory, f"target_{image_count}.jpg")
 
             # Save the image using OpenCV
             success = cv2.imwrite(image_path, cv_image)
@@ -52,19 +53,6 @@ def flag_listener_callback(msg):
         rospy.loginfo("Processing flag set to: True (Ready to process next image)")
 
 
-def trigger_image_capture():
-    """Publishes a True message to the /image_flag topic to trigger image capture."""
-    rospy.init_node("image_trigger_node", anonymous=True)
-    pub = rospy.Publisher("/image_flag", Bool, queue_size=10)
-
-    # Wait for the publisher to register with the ROS system
-    rospy.sleep(1)
-
-    rospy.loginfo("Sending image capture trigger...")
-    pub.publish(True)  # Send the trigger signal
-
-    rospy.loginfo("Image capture request sent.")
-
 # Initialize the ROS node named "camera"
 rospy.init_node("camera", anonymous=True)
 
@@ -80,5 +68,3 @@ rospy.loginfo("Image acquisition node started. Waiting for flag signal to proces
 rospy.spin()
 
 
-if __name__ == "__main__":
-    trigger_image_capture()
