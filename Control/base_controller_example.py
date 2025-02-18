@@ -5,10 +5,10 @@ from actionlib_msgs.msg import GoalID
 from robotnik_navigation_msgs.msg import MoveActionGoal, MoveGoal
 from geometry_msgs.msg import Pose2D, Twist, Vector3
 
-def publish_move_goal(input_base):
+def publish_move_goal(input_base, pub):
     # rospy.init_node('move_goal_publisher')
-
-    pub = rospy.Publisher('/robot/move/goal', MoveActionGoal, queue_size=10)
+    # Comment out publisher, since it is called in the cenetering test executable
+    #pub = rospy.Publisher('/robot/move/goal', MoveActionGoal, queue_size=10)
 
 
     rospy.sleep(0.5)
