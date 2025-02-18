@@ -22,7 +22,7 @@ def sweep_initial(sweep_range, sweep_steps):
         # Fetch the image
         img = get_image() # Example function to fetch the image
         # Fetch the number of white pixels
-        white_pixels_n = white_pixels(img);
+        white_pixels_n = white_pixels(img)
         # Store the number of white pixels
         white_pixels_array[1][i] = white_pixels_n
         # Rotate by sweep increment
