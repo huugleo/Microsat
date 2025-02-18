@@ -3,6 +3,7 @@ import rospy
 from std_msgs.msg import Bool
 import cv2
 from white_pixels import white_pixels
+from robotnik_navigation_msgs.msg import MoveActionGoal, MoveGoal
 
 def trigger_image_capture(pub):
     """Publishes a message to trigger image capture."""
@@ -13,8 +14,7 @@ def trigger_image_capture(pub):
 if __name__ == "__main__":
     rospy.init_node("image_trigger_script", anonymous=True)  # Initialize node once
     image_flag = rospy.Publisher("/image_flag", Bool, queue_size=10)
-    move_robot = rospy.Publisher("move_robot") # change to actual topic
-    i=5
+    move_robot =  rospy.Publisher('/robot/move/goal', MoveActionGoal, queue_size=10)
     rospy.sleep(1)  # Ensure publisher is registered
     image_count = 1
     while i > 0:  # Run until node is shutdown
