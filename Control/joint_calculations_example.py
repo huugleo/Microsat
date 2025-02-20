@@ -1,13 +1,15 @@
 import math
 
 def distance_check(target_distance):
+    # Check if the target is within a certain distance range.
     max_distance = 2 #m
     if target_distance < max_distance:
-        return true
+        return True
     else:
-        return false
+        return False
 
 def calculate_movement(target_distance, target_center_x, target_center_y):
+    # Compute the required orientation (angle_to_move) and distance (distance_to_move) for a robot (or robotic arm) to move from the image center to the target’s position.
     # Fixed values
     distance_scaler = 0.01  # Adjust as needed
     image_resolution = (1440, 1080)  # Adjust as needed
@@ -21,8 +23,8 @@ def calculate_movement(target_distance, target_center_x, target_center_y):
     offset_y = target_center_y - center_y
 
     # Calculate the angle and distance to move the robot arm
-    angle_to_move = math.atan2(offset_y, offset_x)
-    distance_to_move = math.sqrt(offset_x**2 + offset_y**2) * distance_scaler * target_distance
+    angle_to_move = math.atan2(offset_y, offset_x) # in radians
+    distance_to_move = math.sqrt(offset_x**2 + offset_y**2) * distance_scaler * target_distance # in pixels
 
     return angle_to_move, distance_to_move
 
