@@ -18,7 +18,9 @@ if not os.path.exists(save_directory):
 
 
 def image_callback(msg):
-    """ Callback function for image topic, triggered when a new image is received. """
+    """
+    Callback function for image topic, triggered when a new image is received. Converts the image to OpenCV format and saves it.
+    """
     global process_flag, image_count  # Access global variables
     if process_flag:  # Process only one image per flag trigger
         try:
@@ -46,7 +48,9 @@ def image_callback(msg):
 
 
 def flag_listener_callback(msg):
-    """ Callback function for the flag topic, updates the process_flag value. """
+    """
+    Callback function for the flag topic, updates the process_flag value. Triggerd when a new flag message is received.
+    """
     global process_flag
     if msg.data:  # If received flag is True, allow processing of a single image
         process_flag = True

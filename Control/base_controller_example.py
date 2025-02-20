@@ -5,6 +5,10 @@ from actionlib_msgs.msg import GoalID
 from robotnik_navigation_msgs.msg import MoveActionGoal, MoveGoal
 from geometry_msgs.msg import Pose2D, Twist, Vector3
 
+"""
+Publishes a MoveActionGoal message to the /robot/move/goal topic to command the robot's position, orientation and maximum velocity.
+"""
+
 def publish_move_goal(input_base, pub):
     # rospy.init_node('move_goal_publisher')
     # Comment out publisher, since it is called in the cenetering test executable

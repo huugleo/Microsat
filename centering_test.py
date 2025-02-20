@@ -6,7 +6,10 @@ from white_pixels import white_pixels
 from robotnik_navigation_msgs.msg import MoveActionGoal, MoveGoal
 
 def trigger_image_capture(pub):
-    """Publishes a message to trigger image capture."""
+    """
+    Publishes a Bool message with a value of True to /image_flag to signal that a new image should be captured or processed by another node.
+    """
+
     rospy.loginfo("Triggering image capture...")
     pub.publish(True)
     rospy.loginfo("Image capture request sent.")
@@ -17,6 +20,7 @@ if __name__ == "__main__":
     move_robot =  rospy.Publisher('/robot/move/goal', MoveActionGoal, queue_size=10)
     rospy.sleep(1)  # Ensure publisher is registered
     image_count = 1
+    
     while i > 0:  # Run until node is shutdown
         trigger_image_capture(image_flag)  # Call function to publish message
         rospy.sleep(1)  # Delay to avoid overwhelming the system
