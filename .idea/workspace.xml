@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2ddf20b-f09f-4213-be6d-143f1ed6e07c" name="Changes" comment="Removed a tiny detail" />
+    <list default="true" id="f2ddf20b-f09f-4213-be6d-143f1ed6e07c" name="Changes" comment="Reorganised directory after managing to move the robot linearly and take photos" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -54,11 +54,18 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\johnf\Desktop\TU Delft AE\Masters\Q2\MicroSat Engineering\Code\Microsat\Images" />
+      <recent name="C:\Users\johnf\Desktop\TU Delft AE\Masters\Q2\MicroSat Engineering\Code\Microsat\Image_processing" />
+      <recent name="C:\Users\johnf\Desktop\TU Delft AE\Masters\Q2\MicroSat Engineering\Code\Microsat\Examples" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-PY-243.23654.177" />
-        <option value="bundled-python-sdk-91d3a02ef49d-43b77aa2d136-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.23654.177" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-PY-243.24978.54" />
+        <option value="bundled-python-sdk-91e3b7efe1d4-466328ff949b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.24978.54" />
       </set>
     </attachedChunks>
   </component>
@@ -76,6 +83,7 @@
       <workItem from="1739714270457" duration="16000" />
       <workItem from="1739873072684" duration="5326000" />
       <workItem from="1739885021430" duration="12000" />
+      <workItem from="1740154301893" duration="796000" />
     </task>
     <task id="LOCAL-00001" summary="Added examples for base and joint control">
       <option name="closed" value="true" />
@@ -141,7 +149,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739878610246</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Reorganised directory after managing to move the robot linearly and take photos">
+      <option name="closed" value="true" />
+      <created>1740154929065</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1740154929065</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -167,17 +183,7 @@
     <MESSAGE value="Some example code on how to fetch an image" />
     <MESSAGE value="Simplified the robot control for the sweep, the image capture and white pixel count needs to happen in cenetering_test.py. Additionally, base_controller_example.py has the definition of the robot position publisher is now a variable." />
     <MESSAGE value="Removed a tiny detail" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed a tiny detail" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Control/base_controller_example.py</url>
-          <line>1</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Reorganised directory after managing to move the robot linearly and take photos" />
+    <option name="LAST_COMMIT_MESSAGE" value="Reorganised directory after managing to move the robot linearly and take photos" />
   </component>
 </project>
