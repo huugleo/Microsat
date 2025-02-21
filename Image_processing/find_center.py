@@ -33,7 +33,7 @@ def find_center(img):
     return x_distance, y_distance
 
 if __name__ == '__main__':
-    img = cv.imread("test_picture.jpg")
+    img = cv.imread("../Images/test_picture_mouse.jpg")
     img_resize = cv.resize(img, (960,540))
     img_invert = cv.bitwise_not(img_resize)
     find_center(img_invert)

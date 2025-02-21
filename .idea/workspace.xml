@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f2ddf20b-f09f-4213-be6d-143f1ed6e07c" name="Changes" comment="Removed a tiny detail" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;giannisvard&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/huugleo/Microsat.git&quot;,
+    &quot;accountId&quot;: &quot;328f7f7c-1b13-4ed5-a7b5-0a28a27f476a&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2szNEINkCxlKjeceCVz27WV0PGc" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/johnf/Desktop/TU Delft AE/Masters/Q2/MicroSat Engineering/Code/Microsat&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-PY-243.23654.177" />
+        <option value="bundled-python-sdk-91d3a02ef49d-43b77aa2d136-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.23654.177" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f2ddf20b-f09f-4213-be6d-143f1ed6e07c" name="Changes" comment="" />
+      <created>1739454329565</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1739454329565</updated>
+      <workItem from="1739454330790" duration="9837000" />
+      <workItem from="1739530254959" duration="22000" />
+      <workItem from="1739536587496" duration="6455000" />
+      <workItem from="1739714270457" duration="16000" />
+      <workItem from="1739873072684" duration="5326000" />
+      <workItem from="1739885021430" duration="12000" />
+    </task>
+    <task id="LOCAL-00001" summary="Added examples for base and joint control">
+      <option name="closed" value="true" />
+      <created>1739455376240</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1739455376240</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Added examples for base and joint control">
+      <option name="closed" value="true" />
+      <created>1739464586889</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1739464586889</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added sweeping algorithm">
+      <option name="closed" value="true" />
+      <created>1739464810628</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1739464810628</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Added plan for centering">
+      <option name="closed" value="true" />
+      <created>1739465029794</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1739465029794</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Created get_image with fundamental lines of code, small changes on other files.">
+      <option name="closed" value="true" />
+      <created>1739541966392</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1739541966392</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Some example code on how to fetch an image">
+      <option name="closed" value="true" />
+      <created>1739546498875</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1739546498875</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Simplified the robot control for the sweep, the image capture and white pixel count needs to happen in cenetering_test.py. Additionally, base_controller_example.py has the definition of the robot position publisher is now a variable.">
+      <option name="closed" value="true" />
+      <created>1739878060437</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1739878060437</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Removed a tiny detail">
+      <option name="closed" value="true" />
+      <created>1739878610246</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1739878610246</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Create Questions for Jian.md" />
+    <MESSAGE value="Added examples for base and joint control" />
+    <MESSAGE value="Added sweeping algorithm" />
+    <MESSAGE value="Added plan for centering" />
+    <MESSAGE value="Created get_image with fundamental lines of code, small changes on other files." />
+    <MESSAGE value="Some example code on how to fetch an image" />
+    <MESSAGE value="Simplified the robot control for the sweep, the image capture and white pixel count needs to happen in cenetering_test.py. Additionally, base_controller_example.py has the definition of the robot position publisher is now a variable." />
+    <MESSAGE value="Removed a tiny detail" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed a tiny detail" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Control/base_controller_example.py</url>
+          <line>1</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

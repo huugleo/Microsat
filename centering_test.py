@@ -2,7 +2,7 @@
 import rospy
 from std_msgs.msg import Bool
 import cv2
-from white_pixels import white_pixels
+from Image_processing.white_pixels import white_pixels
 from robotnik_navigation_msgs.msg import MoveActionGoal, MoveGoal
 
 def trigger_image_capture(pub):

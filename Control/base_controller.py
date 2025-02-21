@@ -7,7 +7,7 @@ from geometry_msgs.msg import Pose2D, Twist, Vector3
 
 def publish_move_goal(input_base, pub):
     # rospy.init_node('move_goal_publisher')
-    # Comment out publisher, since it is called in the cenetering test executable
+    # Comment out publisher, since it must be called in the executable
     #pub = rospy.Publisher('/robot/move/goal', MoveActionGoal, queue_size=10)
 
 
@@ -43,11 +43,12 @@ def publish_move_goal(input_base, pub):
     rospy.loginfo("Published MoveActionGoal")
 
 if __name__ == '__main__':
-	rospy.init_node('move_goal_publisher')
+	rospy.init_node('base_controller')
+    pub = rospy.Publisher('/robot/move/goal', MoveActionGoal, queue_size=10)
 	try:
 		input_base = {"goal" : [0.0, 0.1, 0.0],
 				"max_lin" : [0.5, 0.5, 0.0],
 				"max_ang" : [0.0, 0.0, 0.2]}
-		publish_move_goal(input_base)
+		publish_move_goal(input_base,pub)
 	except rospy.ROSInterruptException:
 		pass

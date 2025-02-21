@@ -1,4 +1,4 @@
-from base_controller_example import publish_move_goal
+from base_controller import publish_move_goal
 import numpy as np
 
 def step_pixels(incremental_angle, pub):
