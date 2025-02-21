@@ -1,7 +1,5 @@
 <launch>
     <!-- Launch the camera node (image processing) -->
     <node name="camera_node" pkg="" type="get_image.py" output="screen"/>
-
-    <!-- Launch the trigger node (image capture trigger) -->
-    <node name="trigger_node" pkg="your_package" type="trigger_node.py" output="screen"/>
+    
 </launch>
