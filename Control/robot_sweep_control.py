@@ -1,15 +1,19 @@
 from base_controller import publish_move_goal
 import numpy as np
 
+"""
+Functions call publish_move_goal with different parameters to rotate the robot base by a certain angle.
+"""
+
 def step_pixels(incremental_angle, pub):
-    # Move by incremental angle
+    # Move by incremental angle around its current position
     publish_move_goal({"goal": [0.0, 0.0, incremental_angle],
                        "max_lin": [0.5, 0.5, 0.5],
                        "max_ang": [0.2, 0.2, 0.2]}, pub)
 
 
 def arrive_to_start(sweep_range, pub):
-    # Move to starting point
+    # Move to starting point of the sweep
     publish_move_goal({"goal": [0.0, 0.0, -sweep_range/2],
                        "max_lin": [0.5, 0.5, 0.5],
                        "max_ang": [0.2, 0.2, 0.2]}, pub)
