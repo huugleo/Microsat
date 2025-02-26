@@ -1,4 +1,5 @@
-from base_controller import publish_move_goal
+from base_controller_example import publish_move_goal
+import rospy
 import numpy as np
 
 """
@@ -13,10 +14,17 @@ def step_pixels(incremental_angle, pub):
 
 
 def arrive_to_start(sweep_range, pub):
-    # Move to starting point of the sweep
+    """
+    Moves the robot to the starting position and waits until it has stopped before continuing.
+    """
+    rospy.loginfo("Moving to start position...")
+
+    # Publish move goal
     publish_move_goal({"goal": [0.0, 0.0, -sweep_range/2],
                        "max_lin": [0.5, 0.5, 0.5],
                        "max_ang": [0.2, 0.2, 0.2]}, pub)
+    rospy.sleep(10)
+    rospy.loginfo("Arrived at start position.")
 
 def return_to_light(white_pixels_count_array, incremental_angle, pub):
     # Find the index of the maximum white pixels
