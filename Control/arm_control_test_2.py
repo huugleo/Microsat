@@ -1,6 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+# This script is not finised:
+# The angles should be retrieved from the ROS topics of the arm's angles.
+# There is a lot of plotting and printing for debug which can be removed ultimately.
+# And a general cleanup to return solely the angles the three main joints need to move
+# This script also only moves joints robot_arm_shoulder_lift_joint, robot_arm_elbow_joint, robot_arm_wrist_1_joint.
+# Those joints name correspond respectively to joint number 2, 3, 4. with index starting at 1, as on the file on teams.
 # Arm segment lengths and camera offset
 r1 = 0.4784
 r2 = 0.47985
@@ -108,7 +113,7 @@ def inverse_kin(target_z, current_angles):
     return chosen_sol
 
 # === Example Usage ===
-
+# This example needs to be adapted to instead retrieve the ROS angle info about the arm
 # Suppose these are your current joint angles (retrieved from ROS).
 theta1_current = 1/3 * np.pi  
 theta2_current = 1/6 * np.pi   # theta2 is the relative angle.
