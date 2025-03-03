@@ -7,7 +7,7 @@ from robotnik_navigation_msgs.msg import MoveActionGoal, MoveGoal
 import numpy as np
 from robot_sweep_control import step_pixels, arrive_to_start, return_to_light
 from find_center import find_center
-
+from sensor_msgs.msg import JointState
 
 def trigger_image_capture(pub):
     """
@@ -17,6 +17,14 @@ def trigger_image_capture(pub):
     rospy.loginfo("Triggering image capture...")
     pub.publish(True)
     rospy.loginfo("Image capture request sent.")
+
+def get_joint_angles():
+    """
+    Retrieves the current joint angles whenever this function is called
+    """    
+    msg = rospy.wait_for_message("/joint_states", JointState)
+    
+    return msg.position[1], msg.position[2], msg.position[3]
 
 
 if __name__ == "__main__":
@@ -67,3 +75,5 @@ if __name__ == "__main__":
         image_count += 1
         x_distance = np.append(x_distance, find_center(img)[0])
         fine_rotation = -np.abs((fine_rotation / (x_distance[-1] - x_distance[-2]))) * x_distance[-1]
+
+    
