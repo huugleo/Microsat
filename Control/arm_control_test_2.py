@@ -108,9 +108,12 @@ def inverse_kin(target_z, current_angles):
     diff1 = abs(sol1[0] - theta1_current) + abs(sol1[1] - theta2_current)
     diff2 = abs(sol2[0] - theta1_current) + abs(sol2[1] - theta2_current)
     
+
     chosen_sol = sol1 if diff1 < diff2 else sol2
+    wrist_angle = -(chosen_sol[0] + chosen_sol[1])
+    chosen_sol = chosen_sol + (wrist_angle,)  # Append wrist_angle as a new tuple
     print("Desired x =", x_new, "for target z =", target_z)
-    # print(["chosen sol: ", chosen_sol])
+    print(["chosen sol: ", chosen_sol])
     return chosen_sol
 
 # === Example Usage ===
@@ -120,73 +123,73 @@ def inverse_kin(target_z, current_angles):
 if __name__ == "__main__":
     pass
 
-    # theta1_current = 1/3 * np.pi  
-    # theta2_current = 1/6 * np.pi   # theta2 is the relative angle.
-    # current_angles = (theta1_current, theta2_current)
+    theta1_current = 1/3 * np.pi  
+    theta2_current = 1/6 * np.pi   # theta2 is the relative angle.
+    current_angles = (theta1_current, theta2_current)
 
-    # # Compute the current end-effector position.
-    # pos_current = direct_kin(theta1_current, theta2_current)
-    # current_end_x = pos_current[3, 0]
-    # current_end_z = pos_current[3, 2]
-    # print("Current end effector position: x =", current_end_x, ", z =", current_end_z)
+    # Compute the current end-effector position.
+    pos_current = direct_kin(theta1_current, theta2_current)
+    current_end_x = pos_current[3, 0]
+    current_end_z = pos_current[3, 2]
+    print("Current end effector position: x =", current_end_x, ", z =", current_end_z)
 
-    # # Now suppose you want to raise the end effector by 5 cm in z.
-    # target_z = current_end_z - 0.25
+    # Now suppose you want to raise the end effector by 5 cm in z.
+    target_z = current_end_z - 0.25
 
-    # new_angles = inverse_kin(target_z, current_angles)
-    # if new_angles is not None:
-    #     new_theta1, new_theta2 = new_angles
-    #     # The wrist joint is set automatically so that the camera remains level.
-    #     pos_new = direct_kin(new_theta1, new_theta2)
-    #     new_end_x = pos_new[3, 0]
-    #     new_end_z = pos_new[3, 2]
-    #     print("New joint angles:")
-    #     print("  theta1 =", new_theta1)
-    #     print("  theta2 =", new_theta2)
-    #     print("New end effector position: x =", new_end_x, ", z =", new_end_z)
-    # else:
-    #     print("Could not find a valid solution.")
+    new_angles = inverse_kin(target_z, current_angles)
+    if new_angles is not None:
+        new_theta1, new_theta2, __ = new_angles
+        # The wrist joint is set automatically so that the camera remains level.
+        pos_new = direct_kin(new_theta1, new_theta2)
+        new_end_x = pos_new[3, 0]
+        new_end_z = pos_new[3, 2]
+        print("New joint angles:")
+        print("  theta1 =", new_theta1)
+        print("  theta2 =", new_theta2)
+        print("New end effector position: x =", new_end_x, ", z =", new_end_z)
+    else:
+        print("Could not find a valid solution.")
 
-    # ########################
-    # ## PLOTTING
-    # ########################
-    # # Plot original configuration on the left and new configuration on the right.
-    # plotting = False
-    # if plotting == True:
-    #     fig = plt.figure(figsize=(10, 6))
+    ########################
+    ## PLOTTING
+    ########################
+    # Plot original configuration on the left and new configuration on the right.
+    plotting = False
+    if plotting == True:
+        fig = plt.figure(figsize=(10, 6))
 
-    #     # Original configuration.
-    #     ax1 = fig.add_subplot(121, projection='3d')
-    #     ax1.plot(pos_current[:, 0], pos_current[:, 1], pos_current[:, 2],
-    #             marker='o', linestyle='-', color='b')
-    #     ax1.scatter(*pos_current[1, :], color="k", s=100, label="Shoulder joint")
-    #     ax1.scatter(*pos_current[2, :], color="g", s=100, label="Elbow joint")
-    #     ax1.scatter(*pos_current[3, :], color="r", s=100, label="End Effector")
-    #     ax1.set_xlim([-1, 1])
-    #     ax1.set_ylim([-0.1, 0.1])
-    #     ax1.set_zlim([-0.1, 1])
-    #     ax1.set_xlabel("X [m]")
-    #     ax1.set_ylabel("Y [m]")
-    #     ax1.set_zlabel("Z [m]")
-    #     ax1.set_title("Original Configuration")
-    #     ax1.legend()
-    #     ax1.set_aspect('equal', 'box')
+        # Original configuration.
+        ax1 = fig.add_subplot(121, projection='3d')
+        ax1.plot(pos_current[:, 0], pos_current[:, 1], pos_current[:, 2],
+                marker='o', linestyle='-', color='b')
+        ax1.scatter(*pos_current[1, :], color="k", s=100, label="Shoulder joint")
+        ax1.scatter(*pos_current[2, :], color="g", s=100, label="Elbow joint")
+        ax1.scatter(*pos_current[3, :], color="r", s=100, label="End Effector")
+        ax1.set_xlim([-1, 1])
+        ax1.set_ylim([-0.1, 0.1])
+        ax1.set_zlim([-0.1, 1])
+        ax1.set_xlabel("X [m]")
+        ax1.set_ylabel("Y [m]")
+        ax1.set_zlabel("Z [m]")
+        ax1.set_title("Original Configuration")
+        ax1.legend()
+        ax1.set_aspect('equal', 'box')
 
-    #     # New configuration.
-    #     ax2 = fig.add_subplot(122, projection='3d')
-    #     ax2.plot(pos_new[:, 0], pos_new[:, 1], pos_new[:, 2],
-    #             marker='o', linestyle='-', color='b')
-    #     ax2.scatter(*pos_new[1, :], color="k", s=100, label="Shoulder joint")
-    #     ax2.scatter(*pos_new[2, :], color="g", s=100, label="Elbow joint")
-    #     ax2.scatter(*pos_new[3, :], color="r", s=100, label="End Effector")
-    #     ax2.set_xlim([-1, 1])
-    #     ax2.set_ylim([-0.1, 0.1])
-    #     ax2.set_zlim([-0.1, 1])
-    #     ax2.set_xlabel("X [m]")
-    #     ax2.set_ylabel("Y [m]")
-    #     ax2.set_zlabel("Z [m]")
-    #     ax2.set_title("New Configuration")
-    #     ax2.legend()
-    #     ax2.set_aspect('equal', 'box')
+        # New configuration.
+        ax2 = fig.add_subplot(122, projection='3d')
+        ax2.plot(pos_new[:, 0], pos_new[:, 1], pos_new[:, 2],
+                marker='o', linestyle='-', color='b')
+        ax2.scatter(*pos_new[1, :], color="k", s=100, label="Shoulder joint")
+        ax2.scatter(*pos_new[2, :], color="g", s=100, label="Elbow joint")
+        ax2.scatter(*pos_new[3, :], color="r", s=100, label="End Effector")
+        ax2.set_xlim([-1, 1])
+        ax2.set_ylim([-0.1, 0.1])
+        ax2.set_zlim([-0.1, 1])
+        ax2.set_xlabel("X [m]")
+        ax2.set_ylabel("Y [m]")
+        ax2.set_zlabel("Z [m]")
+        ax2.set_title("New Configuration")
+        ax2.legend()
+        ax2.set_aspect('equal', 'box')
 
-    #     plt.show()
+        plt.show()
