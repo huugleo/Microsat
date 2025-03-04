@@ -1,29 +1,24 @@
 #!/usr/bin/env python3
+import numpy as np
 import rospy
 from std_msgs.msg import Bool
 import cv2
-from white_pixels import white_pixels
 from robotnik_navigation_msgs.msg import MoveActionGoal, MoveGoal
-import numpy as np
-from robot_sweep_control import rotate_base, arrive_to_start, return_to_light
-from find_center import find_center
 from sensor_msgs.msg import JointState
 
-def trigger_image_capture(pub):
-    """
-    Publishes a Bool message with a value of True to /image_flag to signal that a new image should be captured or processed by another node.
-    """
+from robot_sweep_control import rotate_base, arrive_to_start, return_to_light
+from find_center import find_center
+from white_pixels import white_pixels
+from approach import move_base_forward, arrival_test
+from get_image import trigger_image_capture
 
-    rospy.loginfo("Triggering image capture...")
-    pub.publish(True)
-    rospy.loginfo("Image capture request sent.")
-
+# We should better import the function from another file to make main look cleaner
 def get_joint_angles():
     """
     Retrieves the current joint angles whenever this function is called
-    """    
+    """
     msg = rospy.wait_for_message("/joint_states", JointState)
-    
+
     return msg.position[1], msg.position[2], msg.position[3]
 
 
@@ -76,4 +71,16 @@ if __name__ == "__main__":
         x_distance = np.append(x_distance, find_center(img)[0])
         fine_rotation = -np.abs((fine_rotation / (x_distance[-1] - x_distance[-2]))) * x_distance[-1]
 
-    
+    rospy.loginfo("Centered on target.")
+    trigger_image_capture(image_flag)  # Call function to publish message
+    rospy.sleep(1)  # Delay to avoid overwhelming the system
+    while not arrival_test(cv2.imread(f"/home/robot/catkin_ws/src/microsat_group_2/src/images/target_{image_count}.jpg"), 0.5):
+        rospy.sleep(1)
+        trigger_image_capture(image_flag)
+        rospy.sleep(1)
+        image_count += 1
+        move_base_forward(0.1, move_robot) # Change 0.1 with a variable step eventually
+
+    rospy.loginfo("Arrived at target.")
+
+

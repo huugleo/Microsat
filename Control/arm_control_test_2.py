@@ -107,10 +107,10 @@ def inverse_kin(target_z, current_angles):
     # Choose the candidate that minimizes the total joint change.
     diff1 = abs(sol1[0] - theta1_current) + abs(sol1[1] - theta2_current)
     diff2 = abs(sol2[0] - theta1_current) + abs(sol2[1] - theta2_current)
-    
+        
 
     chosen_sol = sol1 if diff1 < diff2 else sol2
-    wrist_angle = -(chosen_sol[0] + chosen_sol[1])
+    wrist_angle = -(chosen_sol[0] + chosen_sol[1]) - np.pi
     chosen_sol = chosen_sol + (wrist_angle,)  # Append wrist_angle as a new tuple
     print("Desired x =", x_new, "for target z =", target_z)
     print(["chosen sol: ", chosen_sol])
