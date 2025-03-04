@@ -56,6 +56,14 @@ def flag_listener_callback(msg):
         process_flag = True
         rospy.loginfo("Processing flag set to: True (Ready to process next image)")
 
+def trigger_image_capture(pub):
+    """
+    Publishes a Bool message with a value of True to /image_flag to signal that a new image should be captured or processed by another node.
+    """
+
+    rospy.loginfo("Triggering image capture...")
+    pub.publish(True)
+    rospy.loginfo("Image capture request sent.")
 
 # Initialize the ROS node named "camera"
 rospy.init_node("camera", anonymous=True)
