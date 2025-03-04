@@ -36,7 +36,7 @@ def direct_kin(theta1, theta2, wrist_angle=None):
     # Compute wrist angle if not provided (to keep the camera level)
     if wrist_angle is None:
         wrist_angle = -(theta1 + theta2)
-    
+    print("[Direct Kin:] wrist angle: {}".format(wrist_angle))
     # With the wrist joint, the effective angle for the camera offset is:
     effective_angle = theta1 + theta2 + wrist_angle  # This should be 0.
     # The camera offset now is applied in a fixed horizontal direction.
@@ -101,8 +101,8 @@ def inverse_kin(target_z, current_angles):
         return np.arctan2(target_z, x_new) - np.arctan2(r2 * np.sin(theta2_candidate),
                                                          r1 + r2 * np.cos(theta2_candidate))
     
-    sol1 = (compute_theta1(theta2_sol1), theta2_sol1)
-    sol2 = (compute_theta1(theta2_sol2), theta2_sol2)
+    sol1 = (compute_theta1(theta2_sol1), -theta2_sol1)
+    sol2 = (compute_theta1(theta2_sol2), -theta2_sol2)
     
     # Choose the candidate that minimizes the total joint change.
     diff1 = abs(sol1[0] - theta1_current) + abs(sol1[1] - theta2_current)
@@ -121,7 +121,7 @@ def inverse_kin(target_z, current_angles):
 # Suppose these are your current joint angles (retrieved from ROS).
 
 if __name__ == "__main__":
-    pass
+    # pass
 
     # theta1_current = 1/3 * np.pi  
     # theta2_current = 1/6 * np.pi   # theta2 is the relative angle.
@@ -134,13 +134,13 @@ if __name__ == "__main__":
     # print("Current end effector position: x =", current_end_x, ", z =", current_end_z)
 
     # # Now suppose you want to raise the end effector by 5 cm in z.
-    # target_z = current_end_z - 0.25
+    # target_z = current_end_z - 0.5
 
     # new_angles = inverse_kin(target_z, current_angles)
     # if new_angles is not None:
-    #     new_theta1, new_theta2, __ = new_angles
+    #     new_theta1, new_theta2, wrist_angle = new_angles
     #     # The wrist joint is set automatically so that the camera remains level.
-    #     pos_new = direct_kin(new_theta1, new_theta2)
+    #     pos_new = direct_kin(new_theta1, new_theta2, wrist_angle)
     #     new_end_x = pos_new[3, 0]
     #     new_end_z = pos_new[3, 2]
     #     print("New joint angles:")
@@ -154,7 +154,7 @@ if __name__ == "__main__":
     # ## PLOTTING
     # ########################
     # # Plot original configuration on the left and new configuration on the right.
-    # plotting = False
+    # plotting = True
     # if plotting == True:
     #     fig = plt.figure(figsize=(10, 6))
 
