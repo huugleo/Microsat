@@ -5,7 +5,7 @@ import cv2
 from white_pixels import white_pixels
 from robotnik_navigation_msgs.msg import MoveActionGoal, MoveGoal
 import numpy as np
-from robot_sweep_control import step_pixels, arrive_to_start, return_to_light
+from robot_sweep_control import rotate_base, arrive_to_start, return_to_light
 from find_center import find_center
 from sensor_msgs.msg import JointState
 
@@ -47,7 +47,7 @@ if __name__ == "__main__":
         img = cv2.imread(f"/home/robot/catkin_ws/src/microsat_group_2/src/images/target_{image_count}.jpg")
         white_pixels_array[j] = white_pixels(img)
         image_count = image_count + 1
-        step_pixels(incremental_angle, move_robot)
+        rotate_base(incremental_angle, move_robot)
         rospy.sleep(3)
         rospy.loginfo(f"Moving step number {j + 1} out of {i}")
 
@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
     while np.abs(x_distance[-1]) > centering_x_accuracy:
         print(f"fine_rotation={fine_rotation}")
-        step_pixels(fine_rotation, move_robot)
+        rotate_base(fine_rotation, move_robot)
         rospy.loginfo(f"Moved by fine rotation")
         rospy.sleep(1)
         trigger_image_capture(image_flag)  # Call function to publish message
