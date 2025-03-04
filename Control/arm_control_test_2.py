@@ -108,9 +108,12 @@ def inverse_kin(target_z, current_angles):
     diff1 = abs(sol1[0] - theta1_current) + abs(sol1[1] - theta2_current)
     diff2 = abs(sol2[0] - theta1_current) + abs(sol2[1] - theta2_current)
     
+
     chosen_sol = sol1 if diff1 < diff2 else sol2
+    wrist_angle = -(chosen_sol[0] + chosen_sol[1])
+    chosen_sol = chosen_sol + (wrist_angle,)  # Append wrist_angle as a new tuple
     print("Desired x =", x_new, "for target z =", target_z)
-    # print(["chosen sol: ", chosen_sol])
+    print(["chosen sol: ", chosen_sol])
     return chosen_sol
 
 # === Example Usage ===
@@ -135,7 +138,7 @@ if __name__ == "__main__":
 
     # new_angles = inverse_kin(target_z, current_angles)
     # if new_angles is not None:
-    #     new_theta1, new_theta2 = new_angles
+    #     new_theta1, new_theta2, __ = new_angles
     #     # The wrist joint is set automatically so that the camera remains level.
     #     pos_new = direct_kin(new_theta1, new_theta2)
     #     new_end_x = pos_new[3, 0]
