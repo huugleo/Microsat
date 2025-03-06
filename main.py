@@ -11,6 +11,8 @@ from find_center import find_center
 from white_pixels import white_pixels
 from approach import move_base_forward, arrival_test
 from get_image import trigger_image_capture
+from arm_control_test_2 import direct_kin, inverse_kin
+from arm_control import move_arm
 
 # We should better import the function from another file to make main look cleaner
 def get_joint_angles():
@@ -70,6 +72,47 @@ if __name__ == "__main__":
         image_count += 1
         x_distance = np.append(x_distance, find_center(img)[0])
         fine_rotation = -np.abs((fine_rotation / (x_distance[-1] - x_distance[-2]))) * x_distance[-1]
+    
+    # Capture image
+    trigger_image_capture(image_flag)
+    rospy.sleep(1)
+    img = cv2.imread(f"/home/robot/catkin_ws/src/microsat_group_2/src/images/target_{image_count}.jpg")
+    image_count += 1
+    
+    # Find y_distance
+    y_distance = np.array([find_center(img)[1]])
+    centering_y_accuracy = 50  # pixels
+
+    # Calculate angles for first movement
+    old_angles = get_joint_angles()
+    angle_tuple = (old_angles[1], old_angles[0])
+    delta_z = 0.1 # change this to first step size
+    pos_current = direct_kin(old_angles[1], old_angles[0])
+    current_end_z = pos_current[3, 2]
+    z_target = current_end_z + delta_z
+    new_angles = old_angles
+    new_angles[1], new_angles[0], new_angles[3] = inverse_kin(z_target, angle_tuple)
+
+    # Loop to center image
+    while np.abs(y_distance[-1] > centering_y_accuracy):
+        move_arm(new_angles, move_arm_pub)
+        rospy.sleep(5)
+        
+        trigger_image_capture(image_flag)
+        rospy.sleep(1)
+        img = cv2.imread(f"/home/robot/catkin_ws/src/microsat_group_2/src/images/target_{image_count}.jpg")
+        image_count += 1
+
+        y_distance = np.append(y_distance, find_center(img)[1])
+        delta_z = -np.abs((delta_z/(y_distance[-1]-y_distance[-2])* y_distance[-1])) # have to look at direction of this
+        old_angles = get_joint_angles()
+        angle_tuple = (old_angles[1], old_angles[0])
+        pos_current = direct_kin(old_angles[1], old_angles[0])
+        current_end_z = pos_current[3, 2]
+        z_target = current_end_z + delta_z
+        new_angles = old_angles
+        new_angles[1], new_angles[0], new_angles[3] = inverse_kin(z_target, angle_tuple)
+        
 
     rospy.loginfo("Centered on target.")
     trigger_image_capture(image_flag)  # Call function to publish message
