@@ -1,5 +1,5 @@
+#!/usr/bin/env python3
 import numpy as np
-
 
 # This script also only moves joints robot_arm_shoulder_lift_joint, robot_arm_elbow_joint, robot_arm_wrist_1_joint.
 # Those joints name correspond respectively to joint number 2, 3, 4. with index starting at 1, as on the file on teams.
