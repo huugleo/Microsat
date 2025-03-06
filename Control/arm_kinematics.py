@@ -134,14 +134,11 @@ def inverse_kin(target_z, current_angles):
         chosen_sol = chosen_sol + (wrist_angle,)  # Append wrist_angle as a new tuple
         print("[INVERSE_KIN] Desired x =", x_new, "for target z =", target_z)
         print("[INVERSE_KIN] Chosen sol: ", chosen_sol)
+        return chosen_sol
     else:
         print("[INVERSE_KIN] ERROR: no solution could be found. Solution would result in positive shoulder joint angle.")
-    
-    return chosen_sol
+        return None
 
-# === Example Usage ===
-# This example needs to be adapted to instead retrieve the ROS angle info about the arm
-# Suppose these are your current joint angles (retrieved from ROS).
 
 if __name__ == "__main__":
     pass
