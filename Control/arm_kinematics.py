@@ -1,11 +1,9 @@
 import numpy as np
-import matplotlib.pyplot as plt
-# This script is not finised:
-# The angles should be retrieved from the ROS topics of the arm's angles.
-# There is a lot of plotting and printing for debug which can be removed ultimately.
-# And a general cleanup to return solely the angles the three main joints need to move
+
+
 # This script also only moves joints robot_arm_shoulder_lift_joint, robot_arm_elbow_joint, robot_arm_wrist_1_joint.
 # Those joints name correspond respectively to joint number 2, 3, 4. with index starting at 1, as on the file on teams.
+
 # Arm segment lengths and camera offset
 r1 = 0.4784
 r2 = 0.47985
@@ -24,6 +22,8 @@ def direct_kin(theta1, theta2, wrist_angle=None):
          effective_angle = theta1 + theta2 + wrist_angle = 0.
     
     The camera is then placed at the end effector plus an offset along x.
+    Returns the position in cartesian space (x,y,z) of the base, shoulder, 
+    elbow, end_effector and camera.
     """
     # Compute the positions of the elbow and the end effector (planar: x-z)
     elbow = np.array([r1 * np.cos(theta1),
@@ -36,7 +36,7 @@ def direct_kin(theta1, theta2, wrist_angle=None):
     # Compute wrist angle if not provided (to keep the camera level)
     if wrist_angle is None:
         wrist_angle = -(theta1 + theta2)
-    print("[Direct Kin:] wrist angle: {}".format(wrist_angle))
+    print("[DIRECT_KIN] Wrist angle: {}".format(wrist_angle))
     # With the wrist joint, the effective angle for the camera offset is:
     effective_angle = theta1 + theta2 + wrist_angle  # This should be 0.
     # The camera offset now is applied in a fixed horizontal direction.
@@ -55,15 +55,16 @@ def direct_kin(theta1, theta2, wrist_angle=None):
 
 def inverse_kin(target_z, current_angles):
     """
-    Compute new joint angles (theta1, theta2) such that the end effector
+    Compute new joint angles (theta1, theta2, theta3) such that the end effector
     (from the 2R arm) has:
       - a z-coordinate equal to target_z, and
       - an x-coordinate as close as possible to the current x.
       
-    current_angles: tuple (theta1_current, theta2_current) [theta2 is relative].
+    current_angles: tuple (theta1_current, theta2_current) [theta2 and theta3 are relative].
     The camera wrist is assumed to adjust automatically to keep the camera level.
     """
     theta1_current, theta2_current = current_angles
+
     # Get current end-effector x coordinate from forward kinematics.
     pos_current = direct_kin(theta1_current, theta2_current)
     current_x = pos_current[3, 0]
@@ -87,7 +88,7 @@ def inverse_kin(target_z, current_angles):
 
     d_new = np.sqrt(x_new**2 + target_z**2)
     if d_new < d_min or d_new > d_max:
-        print("Target is unreachable even after clamping x.")
+        print("[INVERSE_KIN] ERROR: Target is unreachable even after clamping x.")
         return None
 
     # --- Standard 2R Inverse Kinematics ---
@@ -104,16 +105,38 @@ def inverse_kin(target_z, current_angles):
     sol1 = (compute_theta1(theta2_sol1), -theta2_sol1)
     sol2 = (compute_theta1(theta2_sol2), -theta2_sol2)
     
+    # The shoulder joint should never be positive.
+    # -pi < shoulder_angle  < 0
+    if sol1[0] > 0 or sol1[0] < -np.pi:
+        sol1 = None
+    
+    if sol2[0] > 0 or sol2[0] < -np.pi:
+        sol2 = None
+    
     # Choose the candidate that minimizes the total joint change.
-    diff1 = abs(sol1[0] - theta1_current) + abs(sol1[1] - theta2_current)
-    diff2 = abs(sol2[0] - theta1_current) + abs(sol2[1] - theta2_current)
-        
+    try:
+        diff1 = abs(sol1[0] - theta1_current) + abs(sol1[1] - theta2_current)
+    except:
+        diff1 = 1e5
+        print("[INVERSE_KIN] WARNING: Solution 1 is not safe.")
 
+    try:
+        diff2 = abs(sol2[0] - theta1_current) + abs(sol2[1] - theta2_current)
+    except:
+        diff2 = 1e5
+        print("[INVERSE_KIN] WARNING: Solution 2 is not safe.")
+        
+    # Make the selection based on the difference in joints
     chosen_sol = sol1 if diff1 < diff2 else sol2
-    wrist_angle = -(chosen_sol[0] + chosen_sol[1]) - np.pi
-    chosen_sol = chosen_sol + (wrist_angle,)  # Append wrist_angle as a new tuple
-    print("Desired x =", x_new, "for target z =", target_z)
-    print(["chosen sol: ", chosen_sol])
+
+    if chosen_sol is not None: 
+        wrist_angle = -(chosen_sol[0] + chosen_sol[1]) - np.pi
+        chosen_sol = chosen_sol + (wrist_angle,)  # Append wrist_angle as a new tuple
+        print("[INVERSE_KIN] Desired x =", x_new, "for target z =", target_z)
+        print("[INVERSE_KIN] Chosen sol: ", chosen_sol)
+    else:
+        print("[INVERSE_KIN] ERROR: no solution could be found. Solution would result in positive shoulder joint angle.")
+    
     return chosen_sol
 
 # === Example Usage ===
@@ -121,7 +144,7 @@ def inverse_kin(target_z, current_angles):
 # Suppose these are your current joint angles (retrieved from ROS).
 
 if __name__ == "__main__":
-    # pass
+    pass
 
     # theta1_current = 1/3 * np.pi  
     # theta2_current = 1/6 * np.pi   # theta2 is the relative angle.
@@ -131,7 +154,7 @@ if __name__ == "__main__":
     # pos_current = direct_kin(theta1_current, theta2_current)
     # current_end_x = pos_current[3, 0]
     # current_end_z = pos_current[3, 2]
-    # print("Current end effector position: x =", current_end_x, ", z =", current_end_z)
+    # print("[ARM KINEMATICS] Current end effector position: x =", current_end_x, ", z =", current_end_z)
 
     # # Now suppose you want to raise the end effector by 5 cm in z.
     # target_z = current_end_z - 0.5
@@ -143,12 +166,12 @@ if __name__ == "__main__":
     #     pos_new = direct_kin(new_theta1, new_theta2, wrist_angle)
     #     new_end_x = pos_new[3, 0]
     #     new_end_z = pos_new[3, 2]
-    #     print("New joint angles:")
-    #     print("  theta1 =", new_theta1)
-    #     print("  theta2 =", new_theta2)
-    #     print("New end effector position: x =", new_end_x, ", z =", new_end_z)
+    #     print("[ARM KINEMATICS] New joint angles:")
+    #     print("[ARM KINEMATICS]  theta1 =", new_theta1)
+    #     print("[ARM KINEMATICS]  theta2 =", new_theta2)
+    #     print("[ARM KINEMATICS] New end effector position: x =", new_end_x, ", z =", new_end_z)
     # else:
-    #     print("Could not find a valid solution.")
+    #     print("[ARM KINEMATICS] Could not find a valid solution.")
 
     # ########################
     # ## PLOTTING
@@ -156,6 +179,7 @@ if __name__ == "__main__":
     # # Plot original configuration on the left and new configuration on the right.
     # plotting = True
     # if plotting == True:
+    #     import matplotlib.pyplot as plt
     #     fig = plt.figure(figsize=(10, 6))
 
     #     # Original configuration.
