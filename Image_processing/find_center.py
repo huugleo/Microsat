@@ -16,8 +16,8 @@ def find_center(img):
     centroid_x = int(M["m10"] / M["m00"])
     centroid_y = int(M["m01"] / M["m00"])
 
-    # put text and highlight the center
-    cv.circle(bin_img, (centroid_x, centroid_y), 5, (0, 0, 0), -1)
+    # # put text and highlight the center
+    # cv.circle(bin_img, (centroid_x, centroid_y), 5, (0, 0, 0), -1)
 
     # # display the image
     # cv.imshow("Image", bin_img)
