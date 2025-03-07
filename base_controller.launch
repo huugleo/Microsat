@@ -1,4 +1,0 @@
-<launch>
-    <!-- Launch the camera node (image processing) -->
-    <node name="move_goal_publisher" pkg="microsat_group_2" type="base_controller_example.py" output="screen"/>
-</launch>
