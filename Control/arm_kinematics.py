@@ -2,16 +2,10 @@
 import numpy as np
 import rospy
 import math
+import scipy.optimize
 from get_arm_state import get_joint_angles
 from arm_control import move_arm
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
-
-# OPTIONAL: if you want to use scipy for a quick numeric solve:
-try:
-    import scipy.optimize
-    HAS_SCIPY = True
-except ImportError:
-    HAS_SCIPY = False
 
 #######################
 # ROBOT PARAMETERS
@@ -20,8 +14,8 @@ L1 = 0.4784  # link length 1 in meters
 L2 = 0.360  # link length 2
 L3 = 0.11985  # link length 3
 
-JOINT_NAMES = ["robot_arm_shoulder_lift_joint", "robot_arm_elbow_joint", "robot_arm_wrist_1_joint"]  # adapt to your robot
-INIT_JOINTS = [0.0, 0.0, 0.0]  # your starting guess
+# Joint names
+JOINT_NAMES = ["robot_arm_shoulder_lift_joint", "robot_arm_elbow_joint", "robot_arm_wrist_1_joint"]
 
 # Weighted factor for orientation constraint
 LAMBDA = 10.0
@@ -30,7 +24,10 @@ LAMBDA = 10.0
 # FORWARD KINEMATICS
 #######################
 def direct_kin(q):
-    """ Return (x, y) for the end effector given angles q = [q1, q2, q3]. """
+    """
+    Return (x, z) for the end effector given angles q = [q1, q2, q3].
+    """
+
     q1, q2, q3 = q
     x = (L1*math.cos(q1)
          + L2*math.cos(q1 + q2)
@@ -51,32 +48,24 @@ def cost_function(q, x0, z0, delta_z):
     x0, y0 = current end effector position
     delta_y = desired small upward motion
     """
+
     # We only care about final Y and orientation sum
     x_calc, z_calc = direct_kin(q)
 
-    # We want final y_calc to be (y0 + delta_y),
-    # but we don't care if x drifts for this example, so let's let x float.
-
-    # orientation constraint => sum of angles = 0
+    # Orientation constraint => sum of angles = 0
     orient_error = (q[0] + q[1] + q[2])**2
 
-    # desired final y error
+    # Desired final y error
     z_error = (z_calc - (z0 + delta_z))**2
 
     return z_error + LAMBDA*orient_error
 
 #######################
-# MAIN DEMO
+# INVERSE KINEMATICS
 #######################
-
 def inverse_kin(delta_z, current_positions):
-    # rospy.init_node("planar_vertical_ik_demo_print_only")
 
-    if not HAS_SCIPY:
-        rospy.logerr("scipy is required for this example numeric solver.")
-        return
-
-    # 1) Start from some initial angles
+    # 1) Start from the initial angles
     current_q = np.array(current_positions, dtype=float)
 
     # 2) Compute current end-effector position
@@ -105,7 +94,7 @@ def inverse_kin(delta_z, current_positions):
     rospy.loginfo("   %s = %.3f rad", JOINT_NAMES[1], new_q[1])
     rospy.loginfo("   %s = %.3f rad", JOINT_NAMES[2], new_q[2])
 
-    # Also show final (x,y)
+    # Also show final (x,z)
     xf, zf = direct_kin(new_q)
     rospy.loginfo("Final end-effector position: x=%.3f, y=%.3f", xf, zf)
     return new_q[0], new_q[1], new_q[2]
@@ -119,19 +108,22 @@ if __name__ == "__main__":
     # Calculate angles for first movement
     old_angles = get_joint_angles()
     print("Old angles: ", old_angles)
-    # old_angles[0] = old_angles[0]-np.pi/6
-    # old_angles[3] = old_angles[3]+np.pi/6
-    # old_angles[2] = np.pi
-    # old_angles[4] = old_angles[4]+np.pi/2
+
+    # Put the angles in the right order
     angle_tuple = (old_angles[1], old_angles[0], old_angles[3])
+
+    # Check if the angles are in the correct order
     print(angle_tuple)
-    delta_z = 0.20  # change this to first step size
-    pos_current = direct_kin(angle_tuple)
-    # print(pos_current)
-    current_end_z = pos_current[1]
-    z_target = current_end_z + delta_z
-    new_angles = old_angles
+
+    # Give a direction to move in
+    delta_z = 0.20
+
+    # Create empty new angles list
+    new_angles = np.zeros(3)
+
+    # Calculate new angles
     new_angles[1], new_angles[0], new_angles[3] = inverse_kin(delta_z, angle_tuple)
-    # new_angles[0] = -new_angles[0]
-    print(new_angles)
+    print("New angles: ", new_angles)
+
+    # Move the arm
     move_arm(new_angles, move_arm_pub)
