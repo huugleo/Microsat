@@ -69,11 +69,11 @@ def send_follow_joint_trajectory_action_goal(input_arm):
 if __name__ == '__main__':
 	try:
 		input_arm = {
-		"q": [0, -1.88, 1.5, -1.38, 0.12 , 1.8],
+		"q": [-1.406, -1.200, -1.500, -0.2999, 1.2, -0.7],
 		"v": [0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
 		"a": [],
 		"e": [],
-		"t": 10
+		"t": 5
 		}
 		send_follow_joint_trajectory_action_goal(input_arm)
 	except rospy.ROSInterruptException:

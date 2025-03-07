@@ -10,7 +10,7 @@ import os  # Library for handling file paths and directories
 bridge = CvBridge()  # Create a CvBridge instance for image conversion
 process_flag = False  # Initially set to False, only process when flag is triggered
 image_count = 1  # Counter for saving images with unique filenames
-save_directory = "/home/thomasvkuik/catkin_ws/src/microsat_camera/src/images/"  # Directory to save images
+save_directory = "/home/robot/catkin_ws/src/microsat_group_2/src/images/"  # Directory to save images
 
 # Ensure the save directory exists, create it if it does not
 if not os.path.exists(save_directory):
@@ -18,11 +18,10 @@ if not os.path.exists(save_directory):
 
 
 def image_callback(msg):
-    """
-    Callback function for image topic, triggered when a new image is received. Converts the image to OpenCV format and saves it.
-    """
+    """ Callback function for image topic, triggered when a new image is received. """
     global process_flag, image_count  # Access global variables
     if process_flag:  # Process only one image per flag trigger
+        rospy.loginfo("I am inside image_callback")
         try:
             rospy.loginfo("Processing and saving one image...")
             # Convert the ROS image message to an OpenCV image
@@ -48,22 +47,12 @@ def image_callback(msg):
 
 
 def flag_listener_callback(msg):
-    """
-    Callback function for the flag topic, updates the process_flag value. Triggerd when a new flag message is received.
-    """
+    """ Callback function for the flag topic, updates the process_flag value. """
     global process_flag
     if msg.data:  # If received flag is True, allow processing of a single image
         process_flag = True
         rospy.loginfo("Processing flag set to: True (Ready to process next image)")
 
-def trigger_image_capture(pub):
-    """
-    Publishes a Bool message with a value of True to /image_flag to signal that a new image should be captured or processed by another node.
-    """
-
-    rospy.loginfo("Triggering image capture...")
-    pub.publish(True)
-    rospy.loginfo("Image capture request sent.")
 
 # Initialize the ROS node named "camera"
 rospy.init_node("camera", anonymous=True)

@@ -6,9 +6,9 @@ import numpy as np
 Functions call publish_move_goal with different parameters to rotate the robot base by a certain angle.
 """
 
-def rotate_base(angle_z, pub):
+def step_pixels(incremental_angle, pub):
     # Move by incremental angle around its current position
-    publish_move_goal({"goal": [0.0, 0.0, angle_z],
+    publish_move_goal({"goal": [0.0, 0.0, incremental_angle],
                        "max_lin": [0.5, 0.5, 0.5],
                        "max_ang": [0.2, 0.2, 0.2]}, pub)
 
