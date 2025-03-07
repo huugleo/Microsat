@@ -48,11 +48,11 @@ def publish_move_goal(input_base, pub):
 
 if __name__ == '__main__':
 	rospy.init_node('base_controller')
-    pub = rospy.Publisher('/robot/move/goal', MoveActionGoal, queue_size=10)
-	try:
+	pub = rospy.Publisher('/robot/move/goal', MoveActionGoal, queue_size=10)
+try:
 		input_base = {"goal" : [0.0, 0.1, 0.0],
 				"max_lin" : [0.5, 0.5, 0.0],
 				"max_ang" : [0.0, 0.0, 0.2]}
 		publish_move_goal(input_base,pub)
-	except rospy.ROSInterruptException:
-		pass
+except rospy.ROSInterruptException:
+	pass
