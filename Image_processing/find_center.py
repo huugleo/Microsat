@@ -1,5 +1,6 @@
 import cv2 as cv
 import numpy as np
+
 def find_center(img, image_count): 
     # convert image to grayscale image
     gray_image = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
