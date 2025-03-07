@@ -68,7 +68,7 @@ def cost_function(q, x0, y0, delta_y):
 # MAIN DEMO
 #######################
 
-def main(delta_y = 0.05, current_positions):
+def main(delta_y, current_positions):
     rospy.init_node("planar_vertical_ik_demo_print_only")
 
     if not HAS_SCIPY:
