@@ -67,55 +67,47 @@ def cost_function(q, x0, y0, delta_y):
 #######################
 # MAIN DEMO
 #######################
-def main():
-    rospy.init_node("planar_vertical_ik_demo")
 
-    pub = rospy.Publisher("/joint_states", JointState, queue_size=10)
-    rate = rospy.Rate(10)
-
-    # Step 1: get current joint angles (fake it here):
-    current_q = np.array(INIT_JOINTS, dtype=float)
-
-    # Step 2: compute current (x0, y0)
-    x0, y0 = fk(current_q)
-
-    # Step 3: define small upward motion
-    delta_y = 0.05  # for example, 5 cm
+def main(delta_y = 0.05, current_positions):
+    rospy.init_node("planar_vertical_ik_demo_print_only")
 
     if not HAS_SCIPY:
         rospy.logerr("scipy is required for this example numeric solver.")
         return
 
-    # Use a local numeric optimizer
+    # 1) Start from some initial angles
+    current_q = np.array(current_positions, dtype=float)
+
+    # 2) Compute current end-effector position
+    x0, y0 = fk(current_q)
+
+    # 3) Define the cost function for the solver
     def objective(q):
         return cost_function(q, x0, y0, delta_y)
 
-    # We do a quick local solve from current joints
-    res = scipy.optimize.minimize(objective, current_q,
-                                  method='BFGS')  # or 'SLSQP', etc.
-
+    # 4) Solve
+    res = scipy.optimize.minimize(objective, current_q, method='BFGS')
     if not res.success:
-        rospy.logwarn("IK solver failed to find a solution. reason: %s", res.message)
+        rospy.logwarn("IK solver failed: %s", res.message)
         return
 
     new_q = res.x
 
-    # Optional: check joint limits here
-    # e.g. if any joint is out of [-pi, pi], discard, etc.
+    # 5) Joint-limit check: joint1 <= 0
+    if new_q[0] > 0.0:
+        rospy.logwarn("Joint 1 is out of limit (%.3f > 0). Discarding solution.", new_q[0])
+        return
 
-    # Build a JointState message
-    js_msg = JointState()
-    js_msg.header = Header()
-    js_msg.name   = JOINT_NAMES
+    # 6) Print results
+    rospy.loginfo("Found a solution that moves up by %.3f m:", delta_y)
+    rospy.loginfo("   %s = %.3f rad", JOINT_NAMES[0], new_q[0])
+    rospy.loginfo("   %s = %.3f rad", JOINT_NAMES[1], new_q[1])
+    rospy.loginfo("   %s = %.3f rad", JOINT_NAMES[2], new_q[2])
 
-    # We'll just publish the new angles once or a few times
-    for _ in range(20):
-        js_msg.header.stamp = rospy.Time.now()
-        js_msg.position = [new_q[0], new_q[1], new_q[2]]
-        pub.publish(js_msg)
-        rate.sleep()
+    # Also show final (x,y)
+    xf, yf = fk(new_q)
+    rospy.loginfo("Final end-effector position: x=%.3f, y=%.3f", xf, yf)
 
-    rospy.loginfo("Published new joint angles for upward motion while keeping end-effector horizontal.")
 
 if __name__ == "__main__":
     try:
