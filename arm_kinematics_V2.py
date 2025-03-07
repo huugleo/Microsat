@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
+import numpy as np
 import rospy
 import math
-import numpy as np
-from sensor_msgs.msg import JointState
-from std_msgs.msg import Header
+from centering_test import get_joint_angles
+from arm_control import move_arm
+from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
 # OPTIONAL: if you want to use scipy for a quick numeric solve:
 try:
@@ -28,21 +29,21 @@ LAMBDA = 10.0
 #######################
 # FORWARD KINEMATICS
 #######################
-def fk(q):
+def direct_kin(q):
     """ Return (x, y) for the end effector given angles q = [q1, q2, q3]. """
     q1, q2, q3 = q
     x = (L1*math.cos(q1)
          + L2*math.cos(q1 + q2)
          + L3*math.cos(q1 + q2 + q3))
-    y = (L1*math.sin(q1)
+    z = (L1*math.sin(q1)
          + L2*math.sin(q1 + q2)
          + L3*math.sin(q1 + q2 + q3))
-    return x, y
+    return x, z
 
 #######################
 # COST FUNCTION
 #######################
-def cost_function(q, x0, y0, delta_y):
+def cost_function(q, x0, z0, delta_z):
     """
     Minimizes the difference in final y position AND enforces q1+q2+q3 = 0
     to keep the end-effector orientation horizontal.
@@ -51,7 +52,7 @@ def cost_function(q, x0, y0, delta_y):
     delta_y = desired small upward motion
     """
     # We only care about final Y and orientation sum
-    x_calc, y_calc = fk(q)
+    x_calc, z_calc = direct_kin(q)
 
     # We want final y_calc to be (y0 + delta_y),
     # but we don't care if x drifts for this example, so let's let x float.
@@ -60,15 +61,15 @@ def cost_function(q, x0, y0, delta_y):
     orient_error = (q[0] + q[1] + q[2])**2
 
     # desired final y error
-    y_error = (y_calc - (y0 + delta_y))**2
+    z_error = (z_calc - (z0 + delta_z))**2
 
-    return y_error + LAMBDA*orient_error
+    return z_error + LAMBDA*orient_error
 
 #######################
 # MAIN DEMO
 #######################
 
-def main(delta_y, current_positions):
+def inverse_kin(delta_z, current_positions):
     rospy.init_node("planar_vertical_ik_demo_print_only")
 
     if not HAS_SCIPY:
@@ -79,11 +80,11 @@ def main(delta_y, current_positions):
     current_q = np.array(current_positions, dtype=float)
 
     # 2) Compute current end-effector position
-    x0, y0 = fk(current_q)
+    x0, y0 = direct_kin(current_q)
 
     # 3) Define the cost function for the solver
     def objective(q):
-        return cost_function(q, x0, y0, delta_y)
+        return cost_function(q, x0, y0, delta_z)
 
     # 4) Solve
     res = scipy.optimize.minimize(objective, current_q, method='BFGS')
@@ -99,18 +100,37 @@ def main(delta_y, current_positions):
         return
 
     # 6) Print results
-    rospy.loginfo("Found a solution that moves up by %.3f m:", delta_y)
+    rospy.loginfo("Found a solution that moves up by %.3f m:", delta_z)
     rospy.loginfo("   %s = %.3f rad", JOINT_NAMES[0], new_q[0])
     rospy.loginfo("   %s = %.3f rad", JOINT_NAMES[1], new_q[1])
     rospy.loginfo("   %s = %.3f rad", JOINT_NAMES[2], new_q[2])
 
     # Also show final (x,y)
-    xf, yf = fk(new_q)
-    rospy.loginfo("Final end-effector position: x=%.3f, y=%.3f", xf, yf)
+    xf, zf = direct_kin(new_q)
+    rospy.loginfo("Final end-effector position: x=%.3f, y=%.3f", xf, zf)
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except rospy.ROSInterruptException:
-        pass
+    rospy.init_node("image_trigger_script", anonymous=True)
+    move_arm_pub = rospy.Publisher('/robot/arm/scaled_pos_traj_controller/command', JointTrajectory, queue_size=10)
+    rospy.sleep(1)
+
+    # Calculate angles for first movement
+    old_angles = get_joint_angles()
+    print("Old angles: ", old_angles)
+    # old_angles[0] = old_angles[0]-np.pi/6
+    # old_angles[3] = old_angles[3]+np.pi/6
+    # old_angles[2] = np.pi
+    # old_angles[4] = old_angles[4]+np.pi/2
+    angle_tuple = (old_angles[1], old_angles[0])
+    print(angle_tuple)
+    delta_z = 0.05  # change this to first step size
+    pos_current = direct_kin(old_angles[1], old_angles[0])
+    # print(pos_current)
+    current_end_z = pos_current[3, 2]
+    z_target = current_end_z + delta_z
+    new_angles = old_angles
+    new_angles[1], new_angles[0], new_angles[3] = inverse_kin(z_target, angle_tuple)
+    new_angles[0] = -new_angles[0]
+    print(new_angles)
+    move_arm(new_angles, move_arm_pub)
